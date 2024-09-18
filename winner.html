@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Congratulations!</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            overflow: hidden;
+            background-color: #f5f5f5;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+            padding: 20px;
+        }
+
+        header {
+            background: #ffcc00;
+            color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 3em;
+        }
+
+        main {
+            position: relative;
+        }
+
+        .winner-image {
+            border-radius: 50%;
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border: 5px solid #ffcc00;
+            margin-bottom: 20px;
+            transition: transform 0.5s ease;
+        }
+
+        .winner-name {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #0056b3;
+            text-decoration: none;
+            padding: 10px 20px;
+            border: 2px solid #0056b3;
+            border-radius: 5px;
+            background-color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            background-color: #0056b3;
+            color: #fff;
+        }
+
+         #confetti {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        overflow: hidden;
+    }
+
+    .confetti-piece {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background-color: #ffcc00;
+        opacity: 1;
+        animation: fall linear infinite;
+    }
+
+    /* Confetti fall animation */
+    @keyframes fall {
+        0% {
+            transform: translateY(-130vh) rotate(0deg); /* Start above the screen */
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(100vh) rotate(720deg); /* End below the screen */
+            opacity: 0;
+        }
+    }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Congratulations!</h1>
+        </header>
+        <main>
+            <p class="winner-name" id="winner-name">?</p>
+            </br>
+            <img src="/static/img/placeholder.jpg" alt="Winner Image" class="winner-image" id="winner-image">
+            </br> <br/>
+            <a href="{{ url_for('index') }}" class="back-link">Back to Draw</a>
+        </main>
+
+        <!-- Add the confetti container -->
+        <div id="confetti"></div>
+    </div>
+
+   <script>
+    // List of contestants passed from the Flask backend
+    const contestants = {{ contestants|tojson }};
+    let currentIndex = 0;
+    let winnerInterval;
+    const nameElement = document.getElementById('winner-name');
+    const imageElement = document.getElementById('winner-image');
+
+    // Function to start animation
+    function startWinnerSelection() {
+        winnerInterval = setInterval(() => {
+            currentIndex = Math.floor(Math.random() * contestants.length);
+            nameElement.textContent = contestants[currentIndex].name;
+            imageElement.src = contestants[currentIndex].image;
+        }, 200); // Change contestants every 200ms
+    }
+
+    // Function to stop animation and select final winner
+    function selectFinalWinner() {
+        clearInterval(winnerInterval); // Stop the interval
+        const finalWinner = contestants[currentIndex];
+        nameElement.textContent = finalWinner.name;
+        imageElement.src = finalWinner.image;
+        imageElement.style.transform = 'scale(1.2)'; // Enlarge the image as a final effect
+    }
+
+    function createConfetti() {
+        const confettiContainer = document.getElementById('confetti');
+        for (let i = 0; i < 200; i++) {  // Increased confetti count
+            const confettiPiece = document.createElement('div');
+            confettiPiece.className = 'confetti-piece';
+            confettiPiece.style.background = `hsl(${Math.random() * 360}, 70%, 50%)`;
+            confettiPiece.style.left = `${Math.random() * 100}%`;
+            confettiPiece.style.width = `${Math.random() * 10 + 5}px`;
+            confettiPiece.style.height = confettiPiece.style.width;
+            confettiPiece.style.animationDuration = `${Math.random() * 3 + 2}s`; // Random fall duration between 2-5 seconds
+            confettiPiece.style.animationDelay = `${Math.random() * 2}s`; // Random delay for more dynamic effect
+            confettiContainer.appendChild(confettiPiece);
+        }
+    }
+
+    // Initialize both the winner selection and confetti when page loads
+    window.onload = () => {
+        // Start the winner selection animation
+        startWinnerSelection();
+
+        // Stop the winner selection and finalize the winner after 15 seconds
+        setTimeout(() => {
+            selectFinalWinner();
+            createConfetti();  // Confetti effect starts when winner is finalized
+        }, 15000); // 15000ms = 15 seconds
+    };
+</script>
+
+</body>
+</html>

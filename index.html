@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Contestants</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* Additional styling for contestants list */
+        .contestants-list {
+            margin-top: 20px;
+            padding: 0;
+            list-style-type: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .contestants-list li {
+            margin: 10px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-size: 1.2rem;
+            text-align: center;
+            width: 150px;
+        }
+
+        .contestants-list li img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .start-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .start-button:hover {
+            background-color: #218838;
+        }
+        /* Additional styling for contestants list */
+.contestants-list {
+    margin-top: 20px;
+    padding: 0;
+    list-style-type: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.contestants-list li {
+    margin: 10px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-size: 1.2rem;
+    text-align: center;
+    width: 150px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Add smooth transition */
+}
+
+.contestants-list li:hover {
+    transform: translateY(-10px); /* Move the card upwards on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Increase shadow intensity */
+}
+
+.contestants-list li img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+/* Floating the "Choose Winner" button */
+.start-button {
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    position: fixed; /* Fixed position to make the button float */
+    bottom: 20px; /* 20px above the bottom of the page */
+    right: 20px; /* 20px from the right side of the page */
+    z-index: 500; /* Ensure it stays on top */
+}
+
+.start-button:hover {
+    background-color: #218838;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Welcome to the Quiz Contestants Page!</h1>
+        </header>
+        <main>
+            <div class="intro">
+                <p>Here are the contestants for today's quiz. Click the button below to choose the lucky winner!</p>
+            </div>
+
+            <!-- Display all contestants with images -->
+            <ul class="contestants-list">
+                {% for contestant in contestants %}
+                <li>
+                    <img src="{{ contestant['image'] }}" alt="{{ contestant['name'] }}">
+                    <p>{{ contestant['name'] }}</p>
+                </li>
+                {% endfor %}
+            </ul>
+
+            <!-- Choose winner button -->
+            <form action="{{ url_for('draw') }}" method="get">
+                <button type="submit" class="start-button">Choose Winner</button>
+            </form>
+        </main>
+        <footer>
+            <p>&copy; 2024 Emartway. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>
